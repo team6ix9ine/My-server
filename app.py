@@ -3,21 +3,20 @@ import requests
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return "Server is Online!"
+@app.route('/info', methods=['GET'])
+def get_info():
+    token = request.args.get('access_token')
+    if not token:
+        return jsonify({"error": "Token missing"}), 400
 
-@app.route("/info", methods=["GET"])
-def bind_info():
-    access_token = request.args.get("access_token")
-    if not access_token:
-        return jsonify({"error": "No token provided"}), 400
-    url = f"https://bind-info-nu.vercel.app/bind_info?access_token={access_token}"
+    # Garena New API Endpoint
+    url = f"https://freefireapi.com/api/v1/account_info?access_token={token}"
+    
     try:
-        resp = requests.get(url)
-        return resp.json()
-    except:
-        return jsonify({"error": "Failed to connect to Garena"}), 500
+        response = requests.get(url, timeout=10)
+        return jsonify(response.json()), response.status_code
+    except Exception as e:
+        return jsonify({"error": "Failed to connect to Garena", "details": str(e)}), 500
 
-if __name__ == "__main__":
-    app.run()
+if __name__ == '__main__':
+    app.run(debug=True)
