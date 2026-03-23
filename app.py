@@ -10,7 +10,7 @@ def get_info():
         return jsonify({"error": "Token missing"}), 400
 
     # Garena New API Endpoint
-    url = f"https://freefireapi.com/api/v1/account_info?access_token={token}"
+    url = f"https://client.freefire.garena.com/api/v1/login?access_token={token}"
     
     try:
         response = requests.get(url, timeout=10)
